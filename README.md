@@ -1,4 +1,3 @@
-# ejgil18
 import pygame
 import Projectile
 
@@ -138,10 +137,14 @@ while not done:
             p1x = 100
             p1y = 100
         elif p1HitBox.colliderect(rockHitBox):
-            p1HitBox.x = 10
-            p1HitBox.y = 10
-            p1x = 100
-            p1y = 100
+            if p1x + p1HitBox.width < rockHitBox.x + 5:
+                p1x = rockHitBox.x - p1HitBox.width
+            if p1x > rockHitBox.x + rockHitBox.width - 5:
+                p1x = rockHitBox.x + p1HitBox.width + 10
+            if p1y + p1HitBox.height < rockHitBox.y + 5:
+                p1y = rockHitBox.y - p1HitBox.height
+            if p1y > rockHitBox.y + rockHitBox.height - 5:
+                p1y = rockHitBox.y + p1HitBox.height + 10
 
         # draw all the graphics
         screen.blit(background,(0,0))
