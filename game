@@ -7,7 +7,11 @@ pygame.display.set_caption('My Game')
 done = False
 gameState = "playing"
 
-ship1 = pygame.image.load("smallCharacter.png")
+bg = pygame.image.load("bg.png")
+
+
+ship1 = pygame.image.load("player.png")
+ship1 = pygame.transform.scale(ship1, (50,50))
 s1x = 250
 s1y = 600
 s1Hitbox = ship1.get_rect()
@@ -26,29 +30,41 @@ while not done:
         #keypresses
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_w]:
-            s1y -= .3
+            s1y -= 3
             s1Dir = "up"
             if s1y < 0:
                 s1y = 0
         if pressed[pygame.K_s]:
-            s1y += .3
+            s1y += 3
             if s1y > 678:
                 s1y = 678
         if pressed[pygame.K_a]:
-            s1x -= .3
+            s1x -= 3
             if s1x < 0:
                 s1x = 0
         if pressed[pygame.K_d]:
-            s1x += .3
+            s1x += 3
             if s1x > 578:
                 s1x = 578
 
-    #update Hitboxs
-    s1Hitbox.x = s1x
-    s1Hitbox.y = s1y
+      # update Hitboxs
+        s1Hitbox.x = s1x
+        s1Hitbox.y = s1y
+
+        # move the bullets
+        for b in s1Bullets:
+            b.move()
+            if b.isOffScreen() == True:
+                s1Bullets.remove(b)
+
 
     #background
-    screen.fill((0,0,0))
+    screen.blit(bg, (0,0))
+
+
+
+    for b in s1Bullets:
+        b.draw(screen)
 
     pygame.draw.rect(screen,
                      (0, 255, 0),
@@ -57,3 +73,4 @@ while not done:
     screen.blit(ship1, (s1x, s1y))
 
     pygame.display.flip()
+
