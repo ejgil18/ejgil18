@@ -1,38 +1,44 @@
 
+import pygame
+import Projectile
+
 pygame.init()
-screen = pygame.display.set_mode((600,700))
+screen = pygame.display.set_mode((600, 700))
 pygame.display.set_caption('My Game')
 done = False
 gameState = "playing"
 
 bg = pygame.image.load("bg.png")
 
-
 ship1 = pygame.image.load("player.png")
-ship1 = pygame.transform.scale(ship1, (50,50))
+ship1 = pygame.transform.scale(ship1, (50, 50))
 s1x = 250
 s1y = 600
 s1Hitbox = ship1.get_rect()
 s1Bullets = []
 s1Dir = "up"
 
-
 enemy1 = pygame.image.load("enemy.png")
-enemy1 = pygame.transform.scale(enemy1, (50,50))
+enemy1 = pygame.transform.scale(enemy1, (50, 50))
 e1x = 300
-e1y = 300
+e1y = 0
 e1Hitbox = enemy1.get_rect()
+e1Health = 50
+
 
 while not done:
+    #moving player always
+    e1y += 1.5
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
         if gameState == "playing":
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                s1Bullets.append(Projectile.Bullet(s1x,s1y,s1Dir,5))
+                s1Bullets.append(Projectile.Bullet(s1x, s1y, s1Dir, 5))
+
 
     if gameState == "playing":
-        #keypresses
+        # keypresses
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_w]:
             s1y -= 3
@@ -51,7 +57,9 @@ while not done:
             s1x += 3
             if s1x > 550:
                 s1x = 550
-      # update Hitboxs
+
+
+        # update Hitboxs
         s1Hitbox.x = s1x
         s1Hitbox.y = s1y
         e1Hitbox.x = e1x
@@ -62,12 +70,15 @@ while not done:
             b.move()
             if b.isOffScreen() == True:
                 s1Bullets.remove(b)
+            elif b.isColliding(e1Hitbox):
+                s1Bullets.remove(b)
+                e1Health -= 10
+                if e1Health <= 0:
+                    e1y = 0
+                    e1Health = 50
 
-
-    #background
-    screen.blit(bg, (0,0))
-
-
+    # background
+    screen.blit(bg, (0, 0))
 
     for b in s1Bullets:
         b.draw(screen)
@@ -77,12 +88,11 @@ while not done:
                      s1Hitbox,
                      1)
     pygame.draw.rect(screen,
-                     (0,255,0),
+                     (0, 255, 0),
                      e1Hitbox,
                      1)
 
     screen.blit(ship1, (s1x, s1y))
-    screen.blit(enemy1,(e1x, e1y))
-    
+    screen.blit(enemy1, (e1x, e1y))
 
     pygame.display.flip()
