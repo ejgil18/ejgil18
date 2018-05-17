@@ -1,0 +1,19 @@
+import pygame
+
+class Enemy(object):
+
+    def __init__(self, x, y, dir):
+        self = pygame.image.load("enemy.png")
+        self = pygame.transform.scale(self, (50, 50))
+        self.x = x
+        self.y = y
+        self.dir = dir
+        self.hitbox = self.get_rect()
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, (0, 255, 0), self.hitbox, 1)
+
+    def move(self):
+        if self.dir == "down":
+            self += 1.5
+            self.hitbox.y = self.y
